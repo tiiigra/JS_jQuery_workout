@@ -1,36 +1,18 @@
-
-function addTask() {
-	var idStr = "checkbox_";
-	var idCounter = 0;
-	var id;
-	
-	return function(value) {
-		if ( !(typeof value === 'string') )  {
-			return;
-		}
-
-		id = idStr + ++idCounter;		
-		
-		str = '<li class="clearfix">' 
-		+ '<input id="' + id +'"type="checkbox">'
-		+ '<label for="' + id + '">'+ value +'</label>'
-		+ '<a class="remove"></span></a></li>';
-
-		$( "#jquery_checkbox_list" ).append(str);	
-	}
-}
-
-(function () {	
+(function ($) {	
 	var ENTER = 13;
 	var ESC = 27;
-	var text;
-	var taskCounter = addTask();
+	var idCounter = 0;
+	
 	
 	/*
 	 * Enter keypress listener & handler 
 	 */
-	 $("#enter_data").keypress(function(event) {
 
+	 $("#enter_data").keypress(function(event) {
+	 	var id_;
+	 	var text;
+	 	var idStr = "checkbox_";
+	 	
 	 	if(event.which === ENTER) {
 	 		text = $("#enter_data").val();
 
@@ -48,149 +30,188 @@ function addTask() {
 			//tasks can't start with a space character
 			if (text.charAt(0) === ' ') {
 				return;
-			}	
+			}
 
-			taskCounter(text);
+			/*
+			 * Add task
+			 */
+
+			(function() {
+
+			 	id_ = idStr + ++idCounter;
+
+			 	var li = $('<li></li>').addClass('clearfix');		
+			 	var input = $('<input>').attr({ id: id_, type: "checkbox" });
+			 	var label = $('<label></label>').attr("for", "id_").text(text);
+			 	var a = $('<a></a>').attr("class", "remove");
+
+			 	li.append(input);
+			 	li.append(label);
+				li.append(a);
+				$( "#jquery_checkbox_list" ).append(li);
+		/*	 	
+			 	str = '<li class="clearfix">' 
+			 	+ '<input id="' + id +'"type="checkbox">'
+			 	+ '<label for="' + id + '">'+ text +'</label>'
+			 	+ '<a class="remove"></a></li>';
+
+			 	$( "#jquery_checkbox_list" ).append(str);	
+		*/
+			 })();
 		}	
+
 	});
 
-	 /*
-	  * Edit task
-	  */
-	   
 
-	 $("#jquery_checkbox_list").on("dblclick", function(event) {
-	 var editStr;
-	 var input;
-	 var e;
-	 var oldTask;
+	/*
+	 * Edit task
+	 */
 
-	 	//dbl on label
-	 	if ($(event.target).prop('tagName') !== 'LABEL') {
+	$("#jquery_checkbox_list").on("dblclick", function(event) {
+		var editStr;
+		var input;
+		var oldTask;
+
+		var $e = $(event.target);
+
+		//dbl on label
+		if ($e.prop('tagName') !== 'LABEL') {
 	 		return;
-	 	}	
-	 		
-	 	e = $(event.target);
+		}	
 
-	 	//do not display checkbox, label
-		$(event.target).hide();
-	 	$(event.target).siblings('input').hide();
-		$(event.target).siblings('a').addClass('edit--a');
-		
+		//do not display checkbox, label
+		$e.hide();
+		$e.siblings('input').hide();
+		$e.siblings('a').addClass('edit--a');
+
 		//remember unput value
-		editStr = $(event.target).text();
+		editStr = $e.text();
 
-	 	//create input
-	 	input = '<input class="edit" type="text" value=' + editStr +' maxlength="100">'
+		//create input
+		input = '<input class="edit" type="text" value=' + editStr +' maxlength="100">'
 
-	 	//add to DOM
-	 	$(event.target).closest('li').append(input);
+		//add to DOM
+		$e.closest('li').append(input);
 	 	
-	 	$("#jquery_checkbox_list").on('keyup', function(event) {
+		$("#jquery_checkbox_list").on('keyup', function(event) {
 	 		
 	 		//if Esc nothing to be changed
 	 		if (event.which === ESC) {
 	 			
-	 			e.show();
-	 			e.siblings('.edit').remove();
-	 			e.siblings('input').show();
-	 			e.siblings('a').removeClass('edit--a');	
+	 			$e.show();
+	 			$e.siblings('.edit').remove();
+	 			$e.siblings('input').show();
+	 			$e.siblings('a').removeClass('edit--a');	
 	 		}
 
 	 		//if Enter change input
 	 		if (event.which === ENTER) {
-	 			oldTask = e.text();	 		
+	 			
+	 			oldTask = $e.text();	 		
 
 
-	 		//if empty or starts with space caracter 
-			if ( $(event.target).val().charAt(0) === ' ' || 
+	 			//if empty or starts with space caracter 
+	 			if ( $(event.target).val().charAt(0) === ' ' || 
 	 			$(event.target).val().charAt(0) === '' ) {
-				
-				e.siblings('.edit').val(oldTask);
-				return;
-			}
-	 			e.text(e.siblings('.edit').val());
-	 			e.show();
-	 			e.siblings('.edit').remove();
-	 			e.siblings('input').show();
-	 			e.siblings('a').removeClass('edit--a');
-	 			event.preventDefault();
 
-	 		}
-
-	 	});
-
+	 				$e.siblings('.edit').val(oldTask);
+	 				return;
+	 			}
 	 	
+	 			//new text
+	 			$e.text($e.siblings('.edit').val());
+	 			$e.show();
+	 			$e.siblings('.edit').remove();
+	 			$e.siblings('input').show();
+	 			$e.siblings('a').removeClass('edit--a');
+	 			event.preventDefault();
+	 		}
+	
+		});
+	
 	});
+
+
 	/*
 	 * Remove task
 	 */
 
 	 $("#jquery_checkbox_list").on("click", function(event) {
+
+	 	var $e = $(event.target);
 	 	
 	 	//remove thumbnail pressed
-	 	if ($(event.target).attr('class') === 'remove') {
+	 	if ($e.attr('class') === 'remove') {	
 	 		
-	 		$(event.target).closest('li').remove();
+	 		$e.closest('li').remove();
 	 	}	
+	 
 	 });	
 
-	
+
 	/*
 	 * Crossout task
 	 */
 	 
 	 $("#jquery_checkbox_list").on("change", function(event) {
-	 	
-	 	if($(event.target).is(":checked")) {
-			
-			$( event.target).siblings('label').addClass("crossout");
-		
-		} else {
-		
-			$( event.target).siblings('label').removeClass("crossout");
-		}
-	//$( event.target).siblings('label').bind(selectTask());
 
+	 	var $e = $(event.target);
+	 	
+	 	if ($e.is(":checked")) {
+
+	 		$e.siblings('label').addClass("crossout");
+
+	 	} else {
+
+	 		$(event.target).siblings('label').removeClass("crossout");
+	 	}
+	 
 	 });
 
-	
+
 	/*
 	 * Crossout all tasks
 	 */
 
-	$("#check_all").on("change", function() {
-	 	
+	 $("#check_all").on("change", function() {
+
+	 	var $input = $('#jquery_checkbox_list input');
+	 	var $label = $('#jquery_checkbox_list label');
+
 	 	if($(this).is(":checked")) {
 
 	 		//check tasks
-	 		$('#jquery_checkbox_list input').prop('checked', true);
+	 		$input.prop('checked', true);
 	 		//cross out tasks
-			$('#jquery_checkbox_list label').addClass("crossout");
-			
-		
-		} else {
-			
+	 		$label.addClass("crossout");
+
+
+	 	} else {
+
 			//uncheck tasks
-	 		$('#jquery_checkbox_list input').prop('checked', false);
+			$input.prop('checked', false);
 	 		//remove cross out class
-			$('#jquery_checkbox_list label').removeClass("crossout");	
-		}
-	});
-	
-	
+	 		$label.removeClass("crossout");	
+	 	}
+	 });
+
+
 	/*
 	 * Remove all checked tasks
 	 */
 
-	$("#remove_checked").on("click", function() {
-		
-		//if checkbox checked, remove parent li
-		$("#jquery_checkbox_list li :input").each(function() {
-			if ( $(this).is(' :checked') ){
+	 $("#remove_checked").on("click", function() {
+
+	 	var $item = $("#jquery_checkbox_list li :input");
+
+		//if checkbox checked, remove parent li on each iteration
+		$item.each(function() {
+			
+			if ($(this).is(' :checked')) {
+				
 				$(this).closest('li').remove();
 			}
 		})
 	});
 
-})();
+})(jQuery);
