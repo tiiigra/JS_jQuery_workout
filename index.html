@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Googs</title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+	<div class="container">
+		<header>
+			<h1>Goods list</h1>
+		</header>
+
+		<main>
+			<form action="#">		
+				<input id="enter_data" type="text" 
+				placeholder="Add more things to buy" name="item" maxlength="100">
+			</form>
+
+			<section id="jquery_checkbox">
+				<form action="#">
+					<ul id="jquery_checkbox_list"></ul>
+				</form>
+			</section>
+
+			<section class="clearfix">
+				<input id="check_all"type="checkbox">
+				<label for="check_all">Check all tasks</label>
+				<div id="remove_checked">Remove all done tasks</div>
+			</section>
+
+		</main>
+		</div>
+		<!-- wrapper END -->
+	</div>
+	<!-- wrapper END -->
+
+	<script type="text/javascript" src="js/app.js" ></script>
+</body>
+</html>
