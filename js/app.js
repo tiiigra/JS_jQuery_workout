@@ -49,14 +49,7 @@
 			 	li.append(label);
 				li.append(a);
 				$( "#jquery_checkbox_list" ).append(li);
-		/*	 	
-			 	str = '<li class="clearfix">' 
-			 	+ '<input id="' + id +'"type="checkbox">'
-			 	+ '<label for="' + id + '">'+ text +'</label>'
-			 	+ '<a class="remove"></a></li>';
-
-			 	$( "#jquery_checkbox_list" ).append(str);	
-		*/
+	
 			 })();
 		}	
 
