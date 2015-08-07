@@ -1,4 +1,4 @@
-# jQuery_workout
+# JS_jQuery_workout
 
 User can:
 
